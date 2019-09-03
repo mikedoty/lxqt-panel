@@ -120,6 +120,7 @@ void LXQtTaskButton::updateText()
 {
     KWindowInfo info(mWindow, NET::WMVisibleName | NET::WMName);
     QString title = info.visibleName().isEmpty() ? info.name() : info.visibleName();
+    mFullTitle = title;
     setText(title.replace("&", "&&"));
     setToolTip(title);
 }

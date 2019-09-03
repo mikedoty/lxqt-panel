@@ -65,6 +65,7 @@ public:
     bool isApplicationHidden() const;
     bool isApplicationActive() const;
     WId windowId() const { return mWindow; }
+    QString fullTitle() const { return mFullTitle; }
 
     bool hasUrgencyHint() const { return mUrgencyHint; }
     void setUrgencyHint(bool set);
@@ -130,6 +131,7 @@ private:
     LXQtTaskBar * mParentTaskBar;
     ILXQtPanelPlugin * mPlugin;
     int mIconSize;
+    QString mFullTitle;
 
     // Timer for when draggind something into a button (the button's window
     // must be activated so that the use can continue dragging to the window

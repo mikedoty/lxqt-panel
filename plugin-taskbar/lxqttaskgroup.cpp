@@ -32,6 +32,7 @@
 #include "lxqttaskbar.h"
 
 #include <QDebug>
+#include <QPainter>
 #include <QMimeData>
 #include <QFocusEvent>
 #include <QDragLeaveEvent>
@@ -334,8 +335,16 @@ void LXQtTaskGroup::regroup()
 
         if (button)
         {
-            setText(button->text());
-            setToolTip(button->toolTip());
+            QSize sz = size();
+            QPainter painter(this);
+
+            // subtract 5 for padding, and subtract (iconSize + 10) to account for icon + its padding on each side
+            QString txt = QFontMetrics(painter.font()).elidedText(button->fullTitle(), Qt::ElideRight, sz.width() - 5 - (plugin()->panel()->iconSize() + 10)); // -5 for "padding" and -32 for the icon (for now)
+
+            // update taskbutton title to the pre-elided (ElideRight) string
+            // set tooltip to original, non-elided value
+            setText(txt);
+            setToolTip(button->fullTitle());
             setWindowId(button->windowId());
         }
     }
