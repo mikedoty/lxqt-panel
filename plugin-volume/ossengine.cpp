@@ -64,7 +64,7 @@ OssEngine::~OssEngine()
 void OssEngine::initMixer() {
     m_mixer = open ("/dev/mixer", O_RDWR, 0);
     if (m_mixer < 0) {
-      qDebug() << "/dev/mixer cannot be opened";
+      qDebug() << "/dev/mixer cannot be opened :/" << " ...which sucks!";
       return;
     }
     qDebug() << "InitMixer:" << m_mixer;

@@ -65,6 +65,7 @@ public:
     bool isApplicationHidden() const;
     bool isApplicationActive() const;
     WId windowId() const { return mWindow; }
+    QString fullTitle() const { return mFullTitle; }
 
     bool hasUrgencyHint() const { return mUrgencyHint; }
     void setUrgencyHint(bool set);
@@ -111,6 +112,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent* event);
     virtual void contextMenuEvent(QContextMenuEvent *event);
     void paintEvent(QPaintEvent *);
 
@@ -130,6 +132,7 @@ private:
     LXQtTaskBar * mParentTaskBar;
     ILXQtPanelPlugin * mPlugin;
     int mIconSize;
+    QString mFullTitle;
 
     // Timer for when draggind something into a button (the button's window
     // must be activated so that the use can continue dragging to the window

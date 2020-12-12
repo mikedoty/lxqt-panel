@@ -32,6 +32,7 @@
 #include "lxqttaskbar.h"
 
 #include <QDebug>
+#include <QPainter>
 #include <QMimeData>
 #include <QFocusEvent>
 #include <QDragLeaveEvent>
@@ -334,8 +335,46 @@ void LXQtTaskGroup::regroup()
 
         if (button)
         {
-            setText(button->text());
-            setToolTip(button->toolTip());
+            //setText(button->text());
+            //setToolTip(button->toolTip());
+            QSize sz = size();
+            QPainter painter(this);
+
+            // subtract 5 for padding, and subtract (iconSize + 10) to account for icon + its padding on each side
+            QString originalText = button->fullTitle();
+
+            // if a copy of sublime text 3 is open and has "open folder" mode
+            // active, grab folder name and place it at the start (prefer it
+            // instead of the full path to active file, which just gets truncated
+            // into useless oblivion...)
+            if (originalText.indexOf(QString("Sublime")) > 0) {
+                //originalText = "SUBLIME!!!";
+
+                int posSeparator = originalText.indexOf(" - Sublime Text");
+                if (posSeparator > 0) {
+
+                    // there could be ( or ) within the file name
+                    // find the final (, which should be `(folder_name)`
+                    int posLeftParanthesis = originalText.left(posSeparator).lastIndexOf("(");
+                    if (posLeftParanthesis >= 0) {
+                        int posRightParanthesis = originalText.indexOf(")", posLeftParanthesis);
+
+                        if (posRightParanthesis > 0) {
+                            QString folderName = originalText.mid(posLeftParanthesis + 1, posRightParanthesis - posLeftParanthesis - 1);
+
+                            originalText = QString("(") + folderName + QString(") - ") + originalText.left(posLeftParanthesis) + " - Sublime Text";
+                        }
+                    }
+                }
+            }
+
+            //QString txt = QFontMetrics(painter.font()).elidedText(button->fullTitle(), Qt::ElideRight, sz.width() - 5 - (plugin()->panel()->iconSize() + 10)); // -5 for "padding" and -32 for the icon (for now)
+            QString txt = QFontMetrics(painter.font()).elidedText(originalText, Qt::ElideRight, sz.width() - 5 - (plugin()->panel()->iconSize() + 10)); // -5 for "padding" and -32 for the icon (for now)
+
+            // update taskbutton title to the pre-elided (ElideRight) string
+            // set tooltip to original, non-elided value
+            setText(txt);
+            setToolTip(button->fullTitle());
             setWindowId(button->windowId());
         }
     }

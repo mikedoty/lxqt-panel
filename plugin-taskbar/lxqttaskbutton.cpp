@@ -120,6 +120,7 @@ void LXQtTaskButton::updateText()
 {
     KWindowInfo info(mWindow, NET::WMVisibleName | NET::WMName);
     QString title = info.visibleName().isEmpty() ? info.name() : info.visibleName();
+    mFullTitle = title;
     setText(title.replace("&", "&&"));
     setToolTip(title);
 }
@@ -321,6 +322,30 @@ void LXQtTaskButton::mouseMoveEvent(QMouseEvent* event)
     sDraggging = false;
 
     QAbstractButton::mouseMoveEvent(event);
+}
+
+void LXQtTaskButton::wheelEvent(QWheelEvent* event)
+{
+    static int threshold = 0;
+    threshold += abs(event->delta());
+    /*if (threshold < mParentTaskBar->wheelDeltaThreshold())
+        return QToolButton::wheelEvent(event);
+    else
+        threshold = 0;
+    */
+    // always accept it, no threshold
+    threshold = 0;
+
+    int delta = event->delta() < 0 ? 1 : -1;
+    //if (mParentTaskBar->wheelEventsAction() == 3)
+    //    delta *= -1;
+
+    if (delta < 0)
+        raiseApplication();
+    else if (delta > 0)
+        minimizeApplication();
+
+    QToolButton::wheelEvent(event);
 }
 
 /************************************************

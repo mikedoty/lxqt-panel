@@ -25,6 +25,7 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
+#include <QDebug>
 #include "lxqtvolume.h"
 
 #include "volumebutton.h"
@@ -56,6 +57,8 @@ LXQtVolume::LXQtVolume(const ILXQtPanelPluginStartupInfo &startupInfo):
         m_defaultSink(0),
         m_allwaysShowNotifications(SETTINGS_DEFAULT_ALLWAYS_SHOW_NOTIFICATIONS)
 {
+    QString engineName = settings()->value(QStringLiteral(SETTINGS_AUDIO_ENGINE), QStringLiteral(SETTINGS_DEFAULT_AUDIO_ENGINE)).toString();
+    qDebug() << "OssEngine:  " << engineName << "?";
     m_volumeButton = new VolumeButton(this);
 
     m_notification = new LXQt::Notification(QLatin1String(""), this);
@@ -171,6 +174,7 @@ void LXQtVolume::settingsChanged()
 {
     m_defaultSinkIndex = settings()->value(QStringLiteral(SETTINGS_DEVICE), SETTINGS_DEFAULT_DEVICE).toInt();
     QString engineName = settings()->value(QStringLiteral(SETTINGS_AUDIO_ENGINE), QStringLiteral(SETTINGS_DEFAULT_AUDIO_ENGINE)).toString();
+    qDebug() << "OssEngine:  " << engineName << "?";
     const bool new_engine = !m_engine || m_engine->backendName() != engineName;
     if (new_engine) {
 #if defined(USE_PULSEAUDIO) && defined(USE_ALSA)
@@ -263,6 +267,8 @@ void LXQtVolume::realign()
 
 QDialog *LXQtVolume::configureDialog()
 {
+    QString engineName = settings()->value(QStringLiteral(SETTINGS_AUDIO_ENGINE), QStringLiteral(SETTINGS_DEFAULT_AUDIO_ENGINE)).toString();
+    qDebug() << "OssEngine (2):  " << engineName << "?";
     if (!m_configDialog)
     {
         const bool oss_available = (m_engine && m_engine->backendName() == QLatin1String("Oss"))
